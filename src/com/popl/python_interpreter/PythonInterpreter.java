@@ -16,20 +16,27 @@ public class PythonInterpreter {
 		File pythonFile;
 		List<String> fileLines = new ArrayList<>();
 
+		//prompt user to insert their file name and save variable for the file
 		System.out.println("Enter the name of your Python file (ex: script.py): ");
 		fileName = scan.nextLine();
 
+		//try to read the file
 		try {
+			//create a python file and scan it
 			pythonFile = new File(fileName);
 			fileScanner = new Scanner(pythonFile);
+			//for every line in the file
 			while (fileScanner.hasNextLine()) {
 				String data = fileScanner.nextLine();
+				//ignore lines with comments, read file
 				if (!data.matches("#.*")) {
 					fileLines.add(data);
 				}
 			}
 			fileScanner.close();
-		} catch (FileNotFoundException e) {
+		} 
+		//throw errors
+		catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
