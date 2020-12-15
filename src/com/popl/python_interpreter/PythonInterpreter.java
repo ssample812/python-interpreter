@@ -22,9 +22,11 @@ public class PythonInterpreter {
 		List<String> fileLines = new ArrayList<>();
 
 		variables.put("charmender_attack", "knife");
-		variables.put("squirtle_HP", "5");
+		variables.put("charmender_HP", "5");
+		variables.put("squirtle_HP", "2");
 		variables.put("num", "3");
 		variables.put("name", "Sam");
+		variables.put("turn", "1");
 
 		System.out.println("Enter the name of your Python file (ex: script.py): ");
 		fileName = scan.nextLine();
@@ -37,7 +39,7 @@ public class PythonInterpreter {
 				if (!data.matches("#.*")) {
 					fileLines.add(data);
 				}
-				print(data);
+				evaluate(data);
 			}
 			fileScanner.close();
 		} catch (FileNotFoundException e) {
@@ -58,11 +60,11 @@ public class PythonInterpreter {
 
 		String output = "";
 
-		for (String seg: str_segments){
+		for (String seg: str_segments) {
 			if (seg.charAt(0) == '\"') {
 				output += seg.substring(1, seg.length() - 1);
 			} else if (seg.startsWith("str")) {
-				String var = seg.substring(4, seg.length() - 1);
+				String var = seg.substring(line.indexOf("(") + 1, seg.length() - 1);
 				output += variables.get(var);
 			} else {
 				output += variables.get(seg);
@@ -72,6 +74,59 @@ public class PythonInterpreter {
 	}
 
 	private static boolean evaluate(String line) {
-		return true;
+		boolean result = true;
+		String statements[] = line.split("and");
+		int x;
+		int y;
+
+		System.out.println(line);
+		System.out.println(statements[0]);
+
+		for (String statement: statements) {
+			if (statement.contains("==")) {
+				String[] factors = statement.split("==");
+				x = Integer.parseInt(variables.get(factors[0].strip()));
+				y = Integer.parseInt(factors[1].strip());
+				result = result && (x == y);
+			} else if (statement.contains("!=")) {
+				String[] factors = statement.split("!=");
+				x = Integer.parseInt(variables.get(factors[0].strip()));
+				y = Integer.parseInt(factors[1].strip());
+				result = result && (x != y);
+			} else if (statement.contains(">=")) {
+				String[] factors = statement.split(">=");
+				x = Integer.parseInt(variables.get(factors[0].strip()));
+				y = Integer.parseInt(factors[1].strip());
+				result = result && (x >= y);
+			} else if (statement.contains("<=")) {
+				String[] factors = statement.split("<=");
+				x = Integer.parseInt(variables.get(factors[0].strip()));
+				y = Integer.parseInt(factors[1].strip());
+				result = result && (x <= y);
+			} else if (statement.contains(">")) {
+				String[] factors = statement.split(">");
+				x = Integer.parseInt(variables.get(factors[0].strip()));
+				y = Integer.parseInt(factors[1].strip());
+				result = result && (x > y);
+			} else if (statement.contains("<")) {
+				String[] factors = statement.split("<");
+				x = Integer.parseInt(variables.get(factors[0]));
+				y = Integer.parseInt(factors[1].strip());
+				result = result && (x < y);
+			}
+		}
+		System.out.println(result);
+		return result;
 	}
+
+	/*
+		charmender_HP > 0 and squirtle_HP > 0
+		turn == 1
+		charmender_HP >= 1
+		squirtle_HP >=1
+		num > 0
+		num == 2
+		num%i==0
+		eq1 != 0
+	*/
 }
