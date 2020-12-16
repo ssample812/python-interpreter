@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+
+import javax.sound.midi.SysexMessage;
+import javax.sound.sampled.LineEvent;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -11,13 +15,13 @@ import java.io.FileNotFoundException;
 public class PythonInterpreter {
 
     private static HashMap<String, String> variables = new HashMap<String, String>();
-  
+    private static List<String> fileLines = new ArrayList<String>();
+
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         Scanner fileScanner;
         String fileName;
         File pythonFile;
-        List<String> fileLines = new ArrayList<>();
       
         // temporary, for testing
         variables.put("charmender_attack", "knife");
@@ -53,8 +57,9 @@ public class PythonInterpreter {
         }
 
         int lineNum = 0;
-        for(String line : fileLines) {
-            lineNum = interpretLine(line, lineNum);
+        while(lineNum < fileLines.size()) {
+            // System.out.println(lineNum + ": " + fileLines.get(lineNum));
+            lineNum = interpretLine(lineNum);
             if(lineNum < 0) {
                 System.out.println("An error occurred.");
             }
@@ -63,22 +68,27 @@ public class PythonInterpreter {
         scan.close();
     }
 
-    private static int interpretLine(String line, int lineNum) {
+    private static int interpretLine(int lineNum) {
+        String line = fileLines.get(lineNum);
         if(line.matches("\s*while.*")) {
             // call while function
             // return new line num
+            lineNum++;
         }
         else if(line.matches("\s*for.*")) {
             // call for function
             // return new line num
+            lineNum++;
         }
         else if(line.matches("\s*if.*")) {
             // call if function
             // return new line num
+            lineNum++;
         }
         else if(line.matches("\s*print.*")) {
             // call print function
-            // return new line num
+            print(line);
+            lineNum++;
         }
         else if(line.matches("\s*[a-zA-Z_]+.*")){
             // call variable handling
@@ -100,7 +110,7 @@ public class PythonInterpreter {
     private static int handleVariable(String line, int lineNum) {
         // to temporarily ignore until if function implemented
         if(line.contains("elif") || line.contains("else")) {
-            return lineNum++;
+            return ++lineNum;
         }
         if(line.contains("-=")) {
             String[] tokens = line.split("-=");
@@ -151,72 +161,72 @@ public class PythonInterpreter {
                 variables.put(tokens[0].trim(), newValue);
             }
         }
-        return lineNum++;
+        return ++lineNum;
     }
 
-	private static void print(String line) {
-		String str = line.substring(line.indexOf("(") + 1, line.length() - 1);
-		String str_segments[] = str.split("\\+");
+    private static void print(String line) {
+        String str = line.substring(line.indexOf("(") + 1, line.length() - 1);
+        String str_segments[] = str.split("\\+");
 
-		String output = "";
+        String output = "";
 
-		for (String seg: str_segments) {
-			if (seg.charAt(0) == '\"') {
-				output += seg.substring(1, seg.length() - 1);
-			} else if (seg.startsWith("str")) {
-				String var = seg.substring(line.indexOf("(") + 1, seg.length() - 1);
-				output += variables.get(var);
-			} else {
-				output += variables.get(seg);
-			}
-		}
-		System.out.println(output);
-	}
+        for (String seg: str_segments) {
+            if (seg.charAt(0) == '\"') {
+                output += seg.substring(1, seg.length() - 1);
+            } else if (seg.startsWith("str")) {
+                String var = seg.substring(seg.indexOf("(") + 1, seg.length() - 1);
+                output += variables.get(var);
+            } else {
+                output += variables.get(seg);
+            }
+        }
+        System.out.println(output);
+    }
 
-	private static boolean evaluate(String line) {
-		boolean result = true;
-		String statements[] = line.split("and");
-		int x;
-		int y;
+    private static boolean evaluate(String line) {
+        boolean result = true;
+        String statements[] = line.split("and");
+        int x;
+        int y;
 
-		System.out.println(line);
-		System.out.println(statements[0]);
+        System.out.println(line);
+        System.out.println(statements[0]);
 
-		for (String statement: statements) {
-			if (statement.contains("==")) {
-				String[] factors = statement.split("==");
-				x = Integer.parseInt(variables.get(factors[0].strip()));
-				y = Integer.parseInt(factors[1].strip());
-				result = result && (x == y);
-			} else if (statement.contains("!=")) {
-				String[] factors = statement.split("!=");
-				x = Integer.parseInt(variables.get(factors[0].strip()));
-				y = Integer.parseInt(factors[1].strip());
-				result = result && (x != y);
-			} else if (statement.contains(">=")) {
-				String[] factors = statement.split(">=");
-				x = Integer.parseInt(variables.get(factors[0].strip()));
-				y = Integer.parseInt(factors[1].strip());
-				result = result && (x >= y);
-			} else if (statement.contains("<=")) {
-				String[] factors = statement.split("<=");
-				x = Integer.parseInt(variables.get(factors[0].strip()));
-				y = Integer.parseInt(factors[1].strip());
-				result = result && (x <= y);
-			} else if (statement.contains(">")) {
-				String[] factors = statement.split(">");
-				x = Integer.parseInt(variables.get(factors[0].strip()));
-				y = Integer.parseInt(factors[1].strip());
-				result = result && (x > y);
-			} else if (statement.contains("<")) {
-				String[] factors = statement.split("<");
-				x = Integer.parseInt(variables.get(factors[0]));
-				y = Integer.parseInt(factors[1].strip());
-				result = result && (x < y);
-			}
-		}
-		System.out.println(result);
-		return result;
-	}
+        for (String statement: statements) {
+            if (statement.contains("==")) {
+                String[] factors = statement.split("==");
+                x = Integer.parseInt(variables.get(factors[0].strip()));
+                y = Integer.parseInt(factors[1].strip());
+                result = result && (x == y);
+            } else if (statement.contains("!=")) {
+                String[] factors = statement.split("!=");
+                x = Integer.parseInt(variables.get(factors[0].strip()));
+                y = Integer.parseInt(factors[1].strip());
+                result = result && (x != y);
+            } else if (statement.contains(">=")) {
+                String[] factors = statement.split(">=");
+                x = Integer.parseInt(variables.get(factors[0].strip()));
+                y = Integer.parseInt(factors[1].strip());
+                result = result && (x >= y);
+            } else if (statement.contains("<=")) {
+                String[] factors = statement.split("<=");
+                x = Integer.parseInt(variables.get(factors[0].strip()));
+                y = Integer.parseInt(factors[1].strip());
+                result = result && (x <= y);
+            } else if (statement.contains(">")) {
+                String[] factors = statement.split(">");
+                x = Integer.parseInt(variables.get(factors[0].strip()));
+                y = Integer.parseInt(factors[1].strip());
+                result = result && (x > y);
+            } else if (statement.contains("<")) {
+                String[] factors = statement.split("<");
+                x = Integer.parseInt(variables.get(factors[0]));
+                y = Integer.parseInt(factors[1].strip());
+                result = result && (x < y);
+            }
+        }
+        System.out.println(result);
+        return result;
+    }
 }
 
