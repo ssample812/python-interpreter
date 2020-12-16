@@ -25,7 +25,7 @@ public class PythonInterpreter {
         variables.put("squirtle_HP", "2");
         variables.put("num", "3");
         variables.put("name", "Sam");
-        variables.put("turn", "1");
+		variables.put("turn", "1");
         
         //prompt user to insert their file name and save variable for the file
         System.out.println("Enter the name of your Python file (ex: script.py): ");
@@ -57,6 +57,7 @@ public class PythonInterpreter {
         }
 
         int lineNum = 0;
+
         while(lineNum < fileLines.size()) {
             System.out.println(lineNum + ": " + fileLines.get(lineNum));
             lineNum = interpretLine(lineNum);
@@ -69,7 +70,7 @@ public class PythonInterpreter {
     }
 
     private static int interpretLine(int lineNum) {
-        String line = fileLines.get(lineNum);
+		String line = fileLines.get(lineNum);
         if(line.matches("\s*while.*")) {
             // call while function
             // return new line num
@@ -92,7 +93,7 @@ public class PythonInterpreter {
         }
         else if(line.matches("\s*[a-zA-Z_]+.*")){
             // call variable handling
-            // return new line num
+			// return new line num
             lineNum = handleVariable(line, lineNum);
         }
         else if(line.matches("\s*")) {
@@ -111,7 +112,7 @@ public class PythonInterpreter {
         // to temporarily ignore until if function implemented
         if(line.contains("elif") || line.contains("else")) {
             return ++lineNum;
-        }
+		}
         if(line.contains("-=")) {
             String[] tokens = line.split("-=");
             if(variables.containsKey(tokens[0].trim())) {
@@ -135,14 +136,62 @@ public class PythonInterpreter {
                 // invalid operation, variable does not exist
                 lineNum = -2;
             }
+		}
+		else if(line.contains("*=")) {
+            String[] tokens = line.split("*=");
+            if(variables.containsKey(tokens[0].trim())) {
+                Integer oldNum = Integer.parseInt(variables.get(tokens[0].trim()));
+                Integer newNum = oldNum * Integer.parseInt(variables.get(tokens[1].trim()));
+                variables.replace(tokens[0].trim(), Integer.toString(newNum));
+            }
+            else {
+                // invalid operation, variable does not exist
+                lineNum = -2;
+            }
+		}
+		else if(line.contains("/=")) {
+            String[] tokens = line.split("/=");
+            if(variables.containsKey(tokens[0].trim())) {
+                Integer oldNum = Integer.parseInt(variables.get(tokens[0].trim()));
+                Integer newNum = oldNum / Integer.parseInt(variables.get(tokens[1].trim()));
+                variables.replace(tokens[0].trim(), Integer.toString(newNum));
+            }
+            else {
+                // invalid operation, variable does not exist
+                lineNum = -2;
+            }
+		}
+		else if(line.contains("^=")) {
+            String[] tokens = line.split("^=");
+            if(variables.containsKey(tokens[0].trim())) {
+                Integer oldNum = Integer.parseInt(variables.get(tokens[0].trim()));
+                Integer newNum = Math.pow(oldNum, Integer.parseInt(variables.get(tokens[1].trim())));
+                variables.replace(tokens[0].trim(), Integer.toString(newNum));
+            }
+            else {
+                // invalid operation, variable does not exist
+                lineNum = -2;
+            }
+		}
+		else if(line.contains("%=")) {
+            String[] tokens = line.split("%=");
+            if(variables.containsKey(tokens[0].trim())) {
+                Integer oldNum = Integer.parseInt(variables.get(tokens[0].trim()));
+                Integer newNum = oldNum % Integer.parseInt(variables.get(tokens[1].trim()));
+                variables.replace(tokens[0].trim(), Integer.toString(newNum));
+            }
+            else {
+                // invalid operation, variable does not exist
+                lineNum = -2;
+            }
         }
         else if(line.contains("=")) {
             String[] tokens = line.split("=");
             String newValue;
             if(variables.containsKey(tokens[0].trim())) {
+				System.out.println(tokens[0]);
                 if(tokens[1].matches("(?:[0-9 ()]+[*+/-])+[0-9 ()]+")) {
-                    // implement equation
-                    newValue = "1";
+                    newValue = calculate(tokens[1]);
                 }
                 else {
                     newValue = tokens[1].trim();
@@ -152,8 +201,7 @@ public class PythonInterpreter {
             else {
                 // check for an equation
                 if(tokens[1].matches("(?:[0-9 ()]+[*+/-])+[0-9 ()]+")) {
-                    // implement equation
-                    newValue = "1";
+                    newValue = calculate(tokens[1]);
                 }
                 else {
                     newValue = tokens[1].trim();
@@ -292,6 +340,33 @@ public class PythonInterpreter {
             }
         }
         return currentLineNum;
+    }
+
+    private static int calculate(String line) {
+        int newValue;
+        while(line.findInLine("[0-9]*")) {
+            int firstValue = Integer.parseInt(line.findInLine("[0-9]*"));
+            String operator = line.findInLine("[^0-9]*").trim();
+            int secondValue = Integer.parseInt(line.findInLine("[0-9]*"));
+            switch (operator){
+                case "+":
+                    newValue = firstValue + secondValue;
+                case "-":
+                    newValue = firstValue - secondValue;
+                case "/":
+                    newValue = firstValue / secondValue;
+                case "*":
+                    newValue = firstValue * secondValue;
+                case "%":
+                    newValue = firstValue % secondValue;
+                default:
+                    throw new RuntimeException("unknown operator: "+operator);
+            }
+            String newLines = line.split(operator);
+            String moreNewLines = newLines.split(str(secondValue));
+            line = moreNewLines[1];
+        }
+        return newValue;
     }
 }
 
