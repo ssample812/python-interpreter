@@ -20,7 +20,7 @@
 - *BONUS*: Syntax error message (this is where we did the accept/reject string. If the given code aka. grammar is not a Python language, reject it. In other words, throw a syntax error message).
 
 ## How to Use/Run the Interpreter
-- In command line, navigate to src/com/popl and run "javac PythonInterpreter.java" and then navigate to src and run "java com/popl/python_interpreter/PythonInterpreter"
+- In command line, navigate to src/com/popl/python-interpreter and run "javac PythonInterpreter.java" and then navigate to src and run "java com/popl/python_interpreter/PythonInterpreter"
 
 ## Grading Criteria
 - A working interpreter – 60%
