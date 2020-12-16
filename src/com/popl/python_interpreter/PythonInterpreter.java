@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-
-import javax.sound.midi.SysexMessage;
-import javax.sound.sampled.LineEvent;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -82,7 +78,7 @@ public class PythonInterpreter {
         }
         else if(line.matches("\s*if.*")) {
             // call if function
-            // return new line num
+            handleIf(lineNum);
             lineNum++;
         }
         else if(line.matches("\s*print.*")) {
@@ -227,6 +223,28 @@ public class PythonInterpreter {
         }
         System.out.println(result);
         return result;
+    }
+
+    private static int numTabs(String line) {
+        char charLine[] = line.toCharArray();
+        int spaces = 0;
+        char temp = charLine[0];
+
+        while (temp == ' ') {
+            spaces++;
+        }
+        return spaces / 4;
+    }
+
+    private static int handleIf(int lineNum) {
+        String line;
+        String condition;
+        int numParentTabs;
+
+        while(true) {
+            numParentTabs = numTabs(fileLines[lineNum]);
+            String condition = 
+        }
     }
 }
 
