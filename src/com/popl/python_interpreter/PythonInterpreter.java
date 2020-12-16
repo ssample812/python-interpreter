@@ -21,6 +21,7 @@ public class PythonInterpreter {
 		File pythonFile;
 		List<String> fileLines = new ArrayList<>();
 
+		// temporary, for testing
 		variables.put("charmender_attack", "knife");
 		variables.put("charmender_HP", "5");
 		variables.put("squirtle_HP", "2");
@@ -39,7 +40,6 @@ public class PythonInterpreter {
 				if (!data.matches("#.*")) {
 					fileLines.add(data);
 				}
-				evaluate(data);
 			}
 			fileScanner.close();
 		} catch (FileNotFoundException e) {
@@ -47,9 +47,9 @@ public class PythonInterpreter {
 			e.printStackTrace();
 		}
 
-		// for(String line : fileLines) {
-		// 	System.out.println(line);
-		// }
+		for(String line : fileLines) {
+			System.out.println(line);
+		}
 
 		scan.close();
 	}
@@ -118,15 +118,4 @@ public class PythonInterpreter {
 		System.out.println(result);
 		return result;
 	}
-
-	/*
-		charmender_HP > 0 and squirtle_HP > 0
-		turn == 1
-		charmender_HP >= 1
-		squirtle_HP >=1
-		num > 0
-		num == 2
-		num%i==0
-		eq1 != 0
-	*/
 }
