@@ -52,9 +52,13 @@ public class PythonInterpreter {
             e.printStackTrace();
         }
 
+        for (String temp : fileLines) {
+            System.out.println(temp);
+        }
+
         int lineNum = 0;
         while(lineNum < fileLines.size()) {
-            // System.out.println(lineNum + ": " + fileLines.get(lineNum));
+            System.out.println(lineNum + ": " + fileLines.get(lineNum));
             lineNum = interpretLine(lineNum);
             if(lineNum < 0) {
                 System.out.println("An error occurred.");
@@ -228,10 +232,16 @@ public class PythonInterpreter {
     private static int numTabs(String line) {
         char charLine[] = line.toCharArray();
         int spaces = 0;
-        char temp = charLine[0];
+        char temp;
+        if (charLine.length == 0) {
+            temp = charLine[0];
+        } else {
+            return 0;
+        }
 
         while (temp == ' ') {
             spaces++;
+            temp = charLine[spaces];
         }
         return spaces / 4;
     }
@@ -240,11 +250,48 @@ public class PythonInterpreter {
         String line;
         String condition;
         int numParentTabs;
+        int numTabs;
+        int currentLineNum;
+        boolean consider;
+        boolean loop = true;
 
-        while(true) {
-            numParentTabs = numTabs(fileLines[lineNum]);
-            String condition = 
+        line = fileLines.get(lineNum);
+        numParentTabs = numTabs(line);
+        condition = line.substring(line.indexOf("if")+3,  line.length()-1);
+        condition = condition.replace(")", "");
+        condition = condition.replace("(", "");
+        consider = evaluate(condition);
+        System.out.println(condition);
+        currentLineNum = lineNum + 1;
+
+        while(loop) {
+            line = fileLines.get(currentLineNum);
+            numTabs = numTabs(line);
+            System.out.println(line);
+            
+            if (numTabs == numParentTabs + 1) {
+                if (consider) {
+                    currentLineNum = interpretLine(currentLineNum);
+                } else {
+                    currentLineNum++;
+                }
+            } else {
+                if (line.contains("elif")) {
+                    // handle elif
+                    condition = line.substring(line.indexOf("elif")+5,  line.length()-1);
+                    condition = condition.replace(")", "");
+                    condition = condition.replace("(", "");
+                    consider = evaluate(condition);
+                } else if (line.contains("else")) {
+                    // handle else
+                    consider = !consider;
+                } else {
+                    loop = false;
+                }
+                currentLineNum++;
+            }
         }
+        return currentLineNum;
     }
 }
 
