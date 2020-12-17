@@ -156,16 +156,17 @@ public class PythonInterpreter {
             }
 		}
 		else if(line.contains("^=")) {
-            // String[] tokens = line.split("^=");
-            // if(variables.containsKey(tokens[0].trim())) {
-            //     Integer oldNum = Integer.parseInt(variables.get(tokens[0].trim()));
-            //     Integer newNum = Math.pow(oldNum, Integer.parseInt(variables.get(tokens[1].trim())));
-            //     variables.replace(tokens[0].trim(), Integer.toString(newNum));
-            // }
-            // else {
-            //     // invalid operation, variable does not exist
-            //     lineNum = -2;
-            // }
+            String[] tokens = line.split("^=");
+            if(variables.containsKey(tokens[0].trim())) {
+                Integer oldNum = Integer.parseInt(variables.get(tokens[0].trim()));
+                double newNum = Math.pow(oldNum, Integer.parseInt(variables.get(tokens[1].trim())));
+                Integer newNumInt = (int)newNum;
+                variables.replace(tokens[0].trim(), newNumInt.toString());
+            }
+            else {
+                // invalid operation, variable does not exist
+                lineNum = -2;
+            }
 		}
 		else if(line.contains("%=")) {
             String[] tokens = line.split("%=");
