@@ -486,13 +486,8 @@ public class PythonInterpreter {
         }
         // if the variable contains "int("
         else if (lowerVariable.contains("int(") || upperVariable.contains("int(")) {
-            // String toInt = line.substring(line.indexOf("int(") + 4, line.indexOf(","));
-            // // line = line.replaceAll("int\\(.*?\\)", toInt.toString());
-            // // line = line.replaceAll("'", "");
-            // // line = line.replaceAll("\"", "");
-            // System.out.println("toInt is now " + toInt);
-            // lower = 1;
-            // upper = 2;
+            lower = 2;
+            upper = calculate(upperVariable);
         }
         // if it's just a variable
         else {
@@ -501,36 +496,11 @@ public class PythonInterpreter {
         }
         
 
-        // THIS IS JUST FOR TESTING
-        // System.out.println("lower bound is" + lowerVariable);
-        // System.out.println("upper bound is" + upperVariable);
-        // System.out.println("Value of lower is " + lower);
-        // System.out.println("Value of upper is " + upper);
+        //for loop
+        for (int i = lower; i < upper; i++) {
+            //create a for loop that loops through the lines
+        }
 
-        // for loop
-        // for (int i = lower; i < upper; i++) {
-        //     if (!variables.containsKey(forVariable.replaceAll(" ", ""))) {
-        //         String assignmentStatement = forVariable + " = " + lower;
-        //         assignVariables(assignmentStatement);
-        //     }
-        //     temp = forLine + 1;
-        //     while (countTabs(lines[temp]) > forTabs && !lines[temp].equals("")) {
-        //         temp = interpretLine(lines, lines[temp], temp);
-        //         if (breakStatement) {
-        //             break;
-        //         }
-        //         temp++;
-        //     }
-        //     if (breakStatement) {
-        //         breakStatement = false;
-        //         vars.remove(forVariable);
-        //         break;
-        //     }
-        //     String nextIteration = forVariable + " += 1";
-        //     assignVariables(nextIteration);
-        // }
-        // vars.remove(forVariable);
-        // return temp;
      }
 }
 
