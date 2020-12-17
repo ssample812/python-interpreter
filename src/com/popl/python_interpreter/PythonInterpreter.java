@@ -57,8 +57,10 @@ public class PythonInterpreter {
 
         int lineNum = 0;
 
+        // for every line in the file
         while(lineNum < fileLines.size()) {
             // System.out.println(lineNum + ": " + fileLines.get(lineNum));
+            // call interpretLine function
             lineNum = interpretLine(lineNum);
             if(lineNum < 0) {
                 System.out.println("An error occurred.");
@@ -68,6 +70,7 @@ public class PythonInterpreter {
         scan.close();
     }
 
+    // function to interpret the given line
     private static int interpretLine(int lineNum) {
 		String line = fileLines.get(lineNum);
         if(line.matches("\s*while.*")) {
@@ -78,6 +81,7 @@ public class PythonInterpreter {
         else if(line.matches("\s*for.*")) {
             // call for function
             // return new line num
+            handleFor(line);
             lineNum++;
         }
         else if(line.matches("\s*if.*")) {
@@ -99,6 +103,7 @@ public class PythonInterpreter {
             lineNum++;
         } 
         else {
+            // otherwise, output an error and quit the program
             System.out.println("An error occurred.\n");
             System.out.println(line);
             lineNum = -1;
@@ -106,6 +111,7 @@ public class PythonInterpreter {
         return lineNum;
     }
 
+    // function to handle assignment operators
     private static int handleVariable(String line, int lineNum) {
         // to temporarily ignore until if function implemented
         if(line.contains("elif") || line.contains("else")) {
@@ -209,6 +215,7 @@ public class PythonInterpreter {
         return ++lineNum;
     }
 
+    // function to handle print
     private static void print(String line) {
         String str = line.substring(line.indexOf("(") + 1, line.length() - 1);
         String str_segments[] = str.split("\\+");
@@ -228,13 +235,16 @@ public class PythonInterpreter {
         System.out.println(output);
     }
 
+    // function to evaluate conditional statements
     private static boolean evaluate(String line) {
         boolean result = true;
         String statements[] = line.split("and");
         int x;
         int y;
 
+        // for every statement
         for (String statement: statements) {
+            // handle ==
             if (statement.contains("==")) {
                 String[] factors = statement.split("==");
                 String xStr = factors[0].strip();
@@ -246,49 +256,65 @@ public class PythonInterpreter {
                 }
                 y = Integer.parseInt(factors[1].strip());
                 result = result && (x == y);
-            } else if (statement.contains("!=")) {
+            } 
+            // handle !=
+            else if (statement.contains("!=")) {
                 String[] factors = statement.split("!=");
                 x = Integer.parseInt(variables.get(factors[0].strip()));
                 y = Integer.parseInt(factors[1].strip());
                 result = result && (x != y);
-            } else if (statement.contains(">=")) {
+            } 
+            // handle >=
+            else if (statement.contains(">=")) {
                 String[] factors = statement.split(">=");
                 x = Integer.parseInt(variables.get(factors[0].strip()));
                 y = Integer.parseInt(factors[1].strip());
                 result = result && (x >= y);
-            } else if (statement.contains("<=")) {
+            } 
+            // handle <=
+            else if (statement.contains("<=")) {
                 String[] factors = statement.split("<=");
                 x = Integer.parseInt(variables.get(factors[0].strip()));
                 y = Integer.parseInt(factors[1].strip());
                 result = result && (x <= y);
-            } else if (statement.contains(">")) {
+            } 
+            // handle >
+            else if (statement.contains(">")) {
                 String[] factors = statement.split(">");
                 x = Integer.parseInt(variables.get(factors[0].strip()));
                 y = Integer.parseInt(factors[1].strip());
                 result = result && (x > y);
-            } else if (statement.contains("<")) {
+            } 
+            // handle <
+            else if (statement.contains("<")) {
                 String[] factors = statement.split("<");
                 x = Integer.parseInt(variables.get(factors[0]));
                 y = Integer.parseInt(factors[1].strip());
                 result = result && (x < y);
             }
         }
+        // return boolean for whether the condition is met
         return result;
     }
 
+    // function to count the number of tabs in each line
     private static int numTabs(String line) {
         char charLine[] = line.toCharArray();
         int spaces = 0;
         char temp = charLine[0];
 
+        // count the number of spaces
         while (temp == ' ') {
             spaces++;
             temp = charLine[spaces];
         }
+        // return the number of tabs (tabs = spaces / 4)
         return spaces / 4;
     }
 
+    // function to handle if and else
     private static int handleIf(int lineNum) {
+        // creating variables
         String line;
         String condition;
         int numParentTabs;
@@ -298,46 +324,62 @@ public class PythonInterpreter {
         boolean alreadyPassed = false;
         boolean loop = true;
 
+        // get line numbers and number of tabs for a parent
         line = fileLines.get(lineNum);
         numParentTabs = numTabs(line);
+        // grab the condition
         condition = line.substring(line.indexOf("if")+3,  line.length()-1);
+        // remove parenthesis from if statement
         condition = condition.replace(")", "");
         condition = condition.replace("(", "");
+        // check whether the condition is met
         consider = evaluate(condition);
         // System.out.println("line: " + line + ", cons: " + consider);
 
+        //increment the line number
         currentLineNum = lineNum + 1;
 
+        // while loop
         while(loop)  {
+            // get the current line number
             try {
                 line = fileLines.get(currentLineNum);
             } catch (Exception e) {
                 System.exit(0);
             }
             
+            // get the number of tabs
             numTabs = numTabs(line);
             // System.out.println("num : " + currentLineNum + ", line: " + line);
             
+            // if it is a child of the if statement
             if (numTabs == numParentTabs + 1) {
+                // check the condition & interpret the line
                 if (consider) {
                     alreadyPassed = true;
                     currentLineNum = interpretLine(currentLineNum);
-                } else {
+                } 
+                // if the condition is not met, go to the next line
+                else {
                     currentLineNum++;
                 }
-            } else {
+            } 
+            // if it is not a child of the right tab
+            else {
                 if (line.contains("elif")) {
                     // handle elif
                     if (alreadyPassed) {
                         consider = false;
-                    } else {
+                    } 
+                    else {
                         condition = line.substring(line.indexOf("elif")+5,  line.length()-1);
                         condition = condition.replace(")", "");
                         condition = condition.replace("(", "");
                         consider = evaluate(condition);
                     }
                     currentLineNum++;
-                } else if (line.contains("else")) {
+                }
+                else if (line.contains("else")) {
                     // handle else
                     if (alreadyPassed) {
                         consider = false;
@@ -353,6 +395,7 @@ public class PythonInterpreter {
         return currentLineNum;
     }
 
+    // function to handle arithmetic operators
     private static Integer calculate(String line) {
         // Scanner finder = new Scanner(line);
         // int newValue;
@@ -383,14 +426,77 @@ public class PythonInterpreter {
         return 5;
     }
 
-    // function to handle a for loop
-    private static void handleFor(String line) {
-
     }
 
-    // function to handle a while loop
+    // function to handle while loops
     private static void handleWhile(String line) {
 
     }
+
+    // // function to handle for loops
+    // private static void handleFor(String line) {
+    //     // if the line is a valid for loop
+    //     if (line.matches("\s*for\\(.*\\):")){ 
+    //         // get rid of for () and keep the condition
+    //         System.out.println("FIRST CONDITION");
+    //         line = line.replace("for(","");
+    //         line = line.substring(0, line.lastIndexOf(")")); 
+
+    //     } 
+    //     // if the line is a valid for loop
+    //     else if (line.matches("\\s*for.*:")) {
+    //         System.out.println("SECOND CONDITION");
+    //         line = line.replace("for ","");
+    //         line = line.substring(0, line.lastIndexOf(":"));
+    //     }
+    //     // if the for loop has invalid syntax
+    //     else{
+    //         System.out.println("LAST CONDITION");
+    //         System.out.println("Syntax Error: Invalid format for for statement");
+    //         System.exit(0);
+    //     }
+    //     // for ints
+    //     if (line.contains("int(")) {
+    //         Integer toInt = (int) interpretMath(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
+    //         line = line.replaceAll("int\\(.*?\\)", toInt.toString());
+    //         line = line.replaceAll("'", "");
+    //         line = line.replaceAll("\"", "");
+    //     }
+
+    //     String forVariable = line.substring(0, line.indexOf("in") - 1);
+
+    //     line = line.substring(line.indexOf("in") + 2, line.lastIndexOf(")"));
+    //     line = line.replace("range(", "");
+    //     double interpretLower = interpretMath(line.substring(1, line.indexOf(",")));
+    //     double interpretUpper = interpretMath(line.substring(line.indexOf(",") + 2));
+    //     int lower = (int) Math.floor(interpretLower);
+    //     int upper = (int) Math.floor(interpretUpper);
+
+    //     int temp = forLine;
+    //     int forTabs = countTabs(lines[temp]);
+    //     for (int i = lower; i < upper; i++) {
+    //         if (!vars.containsKey(forVariable.replaceAll(" ", ""))) {
+    //             String assignmentStatement = forVariable + " = " + lower;
+    //             assignVariables(assignmentStatement);
+    //         }
+    //         temp = forLine + 1;
+    //         while (countTabs(lines[temp]) > forTabs && !lines[temp].equals("")) {
+    //             temp = interpretLine(lines, lines[temp], temp);
+    //             if (breakStatement) {
+    //                 break;
+    //             }
+    //             temp++;
+    //         }
+    //         if (breakStatement) {
+    //             breakStatement = false;
+    //             vars.remove(forVariable);
+    //             break;
+    //         }
+    //         String nextIteration = forVariable + " += 1";
+    //         assignVariables(nextIteration);
+    //     }
+    //     vars.remove(forVariable);
+    //     return temp;
+    // }
 }
 
