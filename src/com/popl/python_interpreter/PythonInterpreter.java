@@ -438,7 +438,8 @@ public class PythonInterpreter {
 
     // function to handle for loops
     private static void handleFor(String line) {
-        System.out.println("Handling for loop");
+        int forTabs = numTabs(line);
+
         // if the for loop has valid syntax
         if (line.matches("\\s*for.*:")) {
             // get for loop down to just condition
@@ -469,40 +470,60 @@ public class PythonInterpreter {
         // remove the range text
         line = line.replace("range(", "");
 
-        // grab & create integers for lower and upper bound in the range
-        double interpretLower = calculate(line.substring(1, line.indexOf(",")));
-        double interpretUpper = calculate(line.substring(line.indexOf(",") + 2));
-        int lower = (int) Math.floor(interpretLower);
-        int upper = (int) Math.floor(interpretUpper);
+        // grab range values
+        String lowerVariable = line.substring(1, line.indexOf(","));
+        String upperVariable = line.substring(line.indexOf(",") + 2);
 
-        System.out.println("lower bound is" + lower);
-        System.out.println("upper bound is" + upper);
+        Integer lower;
+        Integer upper;
 
-    //     int temp = forLine;
-    //     int forTabs = countTabs(lines[temp]);
-    //     for (int i = lower; i < upper; i++) {
-    //         if (!vars.containsKey(forVariable.replaceAll(" ", ""))) {
-    //             String assignmentStatement = forVariable + " = " + lower;
-    //             assignVariables(assignmentStatement);
-    //         }
-    //         temp = forLine + 1;
-    //         while (countTabs(lines[temp]) > forTabs && !lines[temp].equals("")) {
-    //             temp = interpretLine(lines, lines[temp], temp);
-    //             if (breakStatement) {
-    //                 break;
-    //             }
-    //             temp++;
-    //         }
-    //         if (breakStatement) {
-    //             breakStatement = false;
-    //             vars.remove(forVariable);
-    //             break;
-    //         }
-    //         String nextIteration = forVariable + " += 1";
-    //         assignVariables(nextIteration);
-    //     }
-    //     vars.remove(forVariable);
-    //     return temp;
+        // if the range values are variables
+        if (variables.containsKey(lowerVariable) && variables.containsKey(lowerVariable)) {
+            // get range values variable values
+            String lowerValue = variables.get(lowerVariable);
+            String upperValue = variables.get(upperVariable);
+
+            // convert the value of the variables to integers
+            lower = Integer.parseInt(lowerValue);
+            upper = Integer.parseInt(upperValue);
+        }
+        else {
+            lower = Integer.parseInt(lowerVariable);
+            upper = Integer.parseInt(upperVariable);
+        }
+        
+
+        // THIS IS JUST FOR TESTING
+        // System.out.println("lower bound is" + lowerVariable);
+        // System.out.println("upper bound is" + upperVariable);
+        System.out.println("Value of lower is " + lower);
+        System.out.println("Value of upper is " + upper);
+
+        // for loop
+        // for (int i = lower; i < upper; i++) {
+        //     if (!variables.containsKey(forVariable.replaceAll(" ", ""))) {
+        //         String assignmentStatement = forVariable + " = " + lower;
+        //         assignVariables(assignmentStatement);
+        //     }
+        //     temp = forLine + 1;
+        //     while (countTabs(lines[temp]) > forTabs && !lines[temp].equals("")) {
+        //         temp = interpretLine(lines, lines[temp], temp);
+        //         if (breakStatement) {
+        //             break;
+        //         }
+        //         temp++;
+        //     }
+        //     if (breakStatement) {
+        //         breakStatement = false;
+        //         vars.remove(forVariable);
+        //         break;
+        //     }
+        //     String nextIteration = forVariable + " += 1";
+        //     assignVariables(nextIteration);
+        // }
+        // vars.remove(forVariable);
+        // return temp;
      }
 }
+
 
