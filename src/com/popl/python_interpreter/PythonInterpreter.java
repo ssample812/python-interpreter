@@ -435,70 +435,70 @@ public class PythonInterpreter {
     // }
 
     // function to handle for loops
-    private static void handleFor(String line) {
-        System.out.println("Handling for loop");
-        // if the line is a valid for loop
-        if (line.matches("\s*for\\(.*\\):")){ 
-            // get rid of for () and keep the condition
-            System.out.println("FIRST CONDITION");
-            line = line.replace("for(","");
-            line = line.substring(0, line.lastIndexOf(")")); 
+    // private static void handleFor(String line) {
+    //     System.out.println("Handling for loop");
+    //     // if the line is a valid for loop
+    //     if (line.matches("\s*for\\(.*\\):")){ 
+    //         // get rid of for () and keep the condition
+    //         System.out.println("FIRST CONDITION");
+    //         line = line.replace("for(","");
+    //         line = line.substring(0, line.lastIndexOf(")")); 
 
-        } 
-        // if the line is a valid for loop
-        else if (line.matches("\\s*for.*:")) {
-            System.out.println("SECOND CONDITION");
-            line = line.replace("for ","");
-            line = line.substring(0, line.lastIndexOf(":"));
-        }
-        // if the for loop has invalid syntax
-        else{
-            System.out.println("LAST CONDITION");
-            System.out.println("Syntax Error: Invalid format for for statement");
-            System.exit(0);
-        }
-        // for ints
-        if (line.contains("int(")) {
-            Integer toInt = (int) calculate(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
-            line = line.replaceAll("int\\(.*?\\)", toInt.toString());
-            line = line.replaceAll("'", "");
-            line = line.replaceAll("\"", "");
-        }
+    //     } 
+    //     // if the line is a valid for loop
+    //     else if (line.matches("\\s*for.*:")) {
+    //         System.out.println("SECOND CONDITION");
+    //         line = line.replace("for ","");
+    //         line = line.substring(0, line.lastIndexOf(":"));
+    //     }
+    //     // if the for loop has invalid syntax
+    //     else{
+    //         System.out.println("LAST CONDITION");
+    //         System.out.println("Syntax Error: Invalid format for for statement");
+    //         System.exit(0);
+    //     }
+    //     // for ints
+    //     if (line.contains("int(")) {
+    //         Integer toInt = (int) calculate(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
+    //         line = line.replaceAll("int\\(.*?\\)", toInt.toString());
+    //         line = line.replaceAll("'", "");
+    //         line = line.replaceAll("\"", "");
+    //     }
 
-        String forVariable = line.substring(0, line.indexOf("in") - 1);
+    //     String forVariable = line.substring(0, line.indexOf("in") - 1);
 
-        line = line.substring(line.indexOf("in") + 2, line.lastIndexOf(")"));
-        line = line.replace("range(", "");
-        double interpretLower = interpretMath(line.substring(1, line.indexOf(",")));
-        double interpretUpper = interpretMath(line.substring(line.indexOf(",") + 2));
-        int lower = (int) Math.floor(interpretLower);
-        int upper = (int) Math.floor(interpretUpper);
+    //     line = line.substring(line.indexOf("in") + 2, line.lastIndexOf(")"));
+    //     line = line.replace("range(", "");
+    //     double interpretLower = interpretMath(line.substring(1, line.indexOf(",")));
+    //     double interpretUpper = interpretMath(line.substring(line.indexOf(",") + 2));
+    //     int lower = (int) Math.floor(interpretLower);
+    //     int upper = (int) Math.floor(interpretUpper);
 
-        int temp = forLine;
-        int forTabs = countTabs(lines[temp]);
-        for (int i = lower; i < upper; i++) {
-            if (!vars.containsKey(forVariable.replaceAll(" ", ""))) {
-                String assignmentStatement = forVariable + " = " + lower;
-                assignVariables(assignmentStatement);
-            }
-            temp = forLine + 1;
-            while (countTabs(lines[temp]) > forTabs && !lines[temp].equals("")) {
-                temp = interpretLine(lines, lines[temp], temp);
-                if (breakStatement) {
-                    break;
-                }
-                temp++;
-            }
-            if (breakStatement) {
-                breakStatement = false;
-                vars.remove(forVariable);
-                break;
-            }
-            String nextIteration = forVariable + " += 1";
-            assignVariables(nextIteration);
-        }
-        vars.remove(forVariable);
-        return temp;
-    }
+    //     int temp = forLine;
+    //     int forTabs = countTabs(lines[temp]);
+    //     for (int i = lower; i < upper; i++) {
+    //         if (!vars.containsKey(forVariable.replaceAll(" ", ""))) {
+    //             String assignmentStatement = forVariable + " = " + lower;
+    //             assignVariables(assignmentStatement);
+    //         }
+    //         temp = forLine + 1;
+    //         while (countTabs(lines[temp]) > forTabs && !lines[temp].equals("")) {
+    //             temp = interpretLine(lines, lines[temp], temp);
+    //             if (breakStatement) {
+    //                 break;
+    //             }
+    //             temp++;
+    //         }
+    //         if (breakStatement) {
+    //             breakStatement = false;
+    //             vars.remove(forVariable);
+    //             break;
+    //         }
+    //         String nextIteration = forVariable + " += 1";
+    //         assignVariables(nextIteration);
+    //     }
+    //     vars.remove(forVariable);
+    //     return temp;
+    // }
 }
 
