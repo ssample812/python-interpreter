@@ -94,6 +94,10 @@ public class PythonInterpreter {
 			// return new line num
             lineNum = handleVariable(line, lineNum);
         }
+        else if(line.matches("\s*")) {
+            // ignore, blank line
+            lineNum++;
+        } 
         else {
             System.out.println("An error occurred.\n");
             System.out.println(line);
@@ -377,6 +381,16 @@ public class PythonInterpreter {
         // finder.close();
         // return newValue;
         return 5;
+    }
+
+    // function to handle a for loop
+    private static void handleFor(String line) {
+
+    }
+
+    // function to handle a while loop
+    private static void handleWhile(String line) {
+
     }
 }
 
