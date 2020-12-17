@@ -434,7 +434,7 @@ public class PythonInterpreter {
 
     // }
 
-    // // function to handle for loops
+    // function to handle for loops
     // private static void handleFor(String line) {
     //     System.out.println("Handling for loop");
     //     // if the line is a valid for loop
@@ -459,7 +459,7 @@ public class PythonInterpreter {
     //     }
     //     // for ints
     //     if (line.contains("int(")) {
-    //         Integer toInt = (int) interpretMath(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
+    //         Integer toInt = (int) calculate(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
     //         line = line.replaceAll("int\\(.*?\\)", toInt.toString());
     //         line = line.replaceAll("'", "");
     //         line = line.replaceAll("\"", "");
