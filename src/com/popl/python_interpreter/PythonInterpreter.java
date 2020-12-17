@@ -452,14 +452,6 @@ public class PythonInterpreter {
             System.exit(0);
         }
 
-        //NOT HANDLING THIS CASE BC IT'S NOT IN TEST
-        // // for ints
-        // if (line.contains("int(")) {
-        //     Integer toInt = (int) calculate(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
-        //     line = line.replaceAll("int\\(.*?\\)", toInt.toString());
-        //     line = line.replaceAll("'", "");
-        //     line = line.replaceAll("\"", "");
-        // }
 
         // grabs variable
         String forVariable = line.substring(0, line.indexOf("in") - 1);
@@ -476,6 +468,8 @@ public class PythonInterpreter {
 
         Integer lower;
         Integer upper;
+        System.out.println("lowerVariable is " + lowerVariable);
+        System.out.println("upperVariable is " + upperVariable);
 
         // if the range values are variables
         if (variables.containsKey(lowerVariable) && variables.containsKey(lowerVariable)) {
@@ -487,6 +481,17 @@ public class PythonInterpreter {
             lower = Integer.parseInt(lowerValue);
             upper = Integer.parseInt(upperValue);
         }
+        // if the variable contains "int("
+        else if (lowerVariable.contains("int(") || upperVariable.contains("int(")) {
+            // String toInt = line.substring(line.indexOf("int(") + 4, line.indexOf(","));
+            // // line = line.replaceAll("int\\(.*?\\)", toInt.toString());
+            // // line = line.replaceAll("'", "");
+            // // line = line.replaceAll("\"", "");
+            // System.out.println("toInt is now " + toInt);
+            // lower = 1;
+            // upper = 2;
+        }
+        // if it's just a variable
         else {
             lower = Integer.parseInt(lowerVariable);
             upper = Integer.parseInt(upperVariable);
@@ -496,8 +501,8 @@ public class PythonInterpreter {
         // THIS IS JUST FOR TESTING
         // System.out.println("lower bound is" + lowerVariable);
         // System.out.println("upper bound is" + upperVariable);
-        System.out.println("Value of lower is " + lower);
-        System.out.println("Value of upper is " + upper);
+        // System.out.println("Value of lower is " + lower);
+        // System.out.println("Value of upper is " + upper);
 
         // for loop
         // for (int i = lower; i < upper; i++) {
