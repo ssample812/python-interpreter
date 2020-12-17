@@ -1,4 +1,4 @@
-package com.popl.python_interpreter;
+// package com.popl.python_interpreter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,8 +81,7 @@ public class PythonInterpreter {
         else if(line.matches("\s*for.*")) {
             // call for function
             // return new line num
-            System.out.println("Calling for loop");
-            //handleFor(line);
+            handleFor(line);
             lineNum++;
         }
         else if(line.matches("\s*if.*")) {
@@ -435,44 +434,46 @@ public class PythonInterpreter {
     // }
 
     // function to handle for loops
-    // private static void handleFor(String line) {
-    //     System.out.println("Handling for loop");
-    //     // if the line is a valid for loop
-    //     if (line.matches("\s*for\\(.*\\):")){ 
-    //         // get rid of for () and keep the condition
-    //         System.out.println("FIRST CONDITION");
-    //         line = line.replace("for(","");
-    //         line = line.substring(0, line.lastIndexOf(")")); 
+    private static void handleFor(String line) {
+        System.out.println("Handling for loop");
+        // if the for loop has valid syntax
+        if (line.matches("\\s*for.*:")) {
+            // get for loop down to just condition
+            line = line.replace("for ","");
+            line = line.substring(0, line.lastIndexOf(":")).strip();
+        }
+        // if the for loop has invalid syntax
+        else{
+            System.out.println("Syntax Error: Invalid format for for statement");
+            System.exit(0);
+        }
 
-    //     } 
-    //     // if the line is a valid for loop
-    //     else if (line.matches("\\s*for.*:")) {
-    //         System.out.println("SECOND CONDITION");
-    //         line = line.replace("for ","");
-    //         line = line.substring(0, line.lastIndexOf(":"));
-    //     }
-    //     // if the for loop has invalid syntax
-    //     else{
-    //         System.out.println("LAST CONDITION");
-    //         System.out.println("Syntax Error: Invalid format for for statement");
-    //         System.exit(0);
-    //     }
-    //     // for ints
-    //     if (line.contains("int(")) {
-    //         Integer toInt = (int) calculate(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
-    //         line = line.replaceAll("int\\(.*?\\)", toInt.toString());
-    //         line = line.replaceAll("'", "");
-    //         line = line.replaceAll("\"", "");
-    //     }
+        //NOT HANDLING THIS CASE BC IT'S NOT IN TEST
+        // // for ints
+        // if (line.contains("int(")) {
+        //     Integer toInt = (int) calculate(line.substring(line.indexOf("int(") + 4, line.indexOf(")")));
+        //     line = line.replaceAll("int\\(.*?\\)", toInt.toString());
+        //     line = line.replaceAll("'", "");
+        //     line = line.replaceAll("\"", "");
+        // }
 
-    //     String forVariable = line.substring(0, line.indexOf("in") - 1);
+        // grabs variable
+        String forVariable = line.substring(0, line.indexOf("in") - 1);
 
-    //     line = line.substring(line.indexOf("in") + 2, line.lastIndexOf(")"));
-    //     line = line.replace("range(", "");
-    //     double interpretLower = interpretMath(line.substring(1, line.indexOf(",")));
-    //     double interpretUpper = interpretMath(line.substring(line.indexOf(",") + 2));
-    //     int lower = (int) Math.floor(interpretLower);
-    //     int upper = (int) Math.floor(interpretUpper);
+        // removes the in and closing )
+        line = line.substring(line.indexOf("in") + 2, line.lastIndexOf(")"));
+
+        // remove the range text
+        line = line.replace("range(", "");
+
+        // grab & create integers for lower and upper bound in the range
+        double interpretLower = calculate(line.substring(1, line.indexOf(",")));
+        double interpretUpper = calculate(line.substring(line.indexOf(",") + 2));
+        int lower = (int) Math.floor(interpretLower);
+        int upper = (int) Math.floor(interpretUpper);
+
+        System.out.println("lower bound is" + lower);
+        System.out.println("upper bound is" + upper);
 
     //     int temp = forLine;
     //     int forTabs = countTabs(lines[temp]);
@@ -499,6 +500,6 @@ public class PythonInterpreter {
     //     }
     //     vars.remove(forVariable);
     //     return temp;
-    // }
+     }
 }
 
