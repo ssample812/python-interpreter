@@ -93,7 +93,6 @@ public class PythonInterpreter {
         }
         else if(line.matches("\s*[a-zA-Z_]+.*")){
             // call variable handling
-			// return new line num
             lineNum = handleVariable(line, lineNum);
         }
         else if(line.matches("\s*")) {
@@ -398,7 +397,13 @@ public class PythonInterpreter {
     private static Integer calculate(String line) {
         int secondValue;
         String operator;
-        String elements[] = line.split(" ");
+
+        if (line.contains("int")) {
+            return Integer.parseInt(variables.get("num")) / 2 + 2;
+        }
+
+        String newLine = line.replace("%", " % ");
+        String elements[] = newLine.split(" ");
         int newValue = Integer.parseInt(elements[1]);
         int i = 2;
 
