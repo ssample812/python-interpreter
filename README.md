@@ -20,7 +20,7 @@ For our project, we implemented a basic interpreter for Python in Java.  First, 
 - *BONUS*: Syntax error message (this is where we did the accept/reject string. If the given code aka. grammar is not a Python language, reject it. In other words, throw a syntax error message).
 
 ## How to Use/Run the Interpreter
-- In your command line, navigate to the src/com/popl/python-interpreter directory and run "java -cp bin com.popl.python_interpreter.PythonInterpreter".  When prompted for a file, you can enter "python_test_code.py".  You must have at least JDK 11 for the program to run successfully.
+- In command line, navigate to src/com/popl/python-interpreter and run "javac PythonInterpreter.java" and then navigate to src and run "java com/popl/python_interpreter/PythonInterpreter".  When prompted for a file, you can enter "python_test_code.py".  You must have at least JDK 11 for the program to run successfully.
 
 ## Grading Criteria
 - A working interpreter – 60%
