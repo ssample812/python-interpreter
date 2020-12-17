@@ -1,7 +1,7 @@
 # Python Interpreter
 
 ## Project Explanation
-*Principles of Programming Languages FS20 Final Project description here*
+For our project, we implemented a basic interpreter for Python in Java.  First, parse the file provided by the user, storing it as a global array of Strings.  Next, we loop through each line of the file using its line number, calling the interpretLine() function on each.  This function detects what the purpose of the line is (ex: print, for, while, etc), and calls on another function to handle its execution.  For example, a line beginning with "if" will be handled by the handleIf function.  The next line to interpret is determined using the index returned by the interpretLine() function when it is complete.
 
 ## Team Members
 - Rebecca Parker
@@ -20,7 +20,7 @@
 - *BONUS*: Syntax error message (this is where we did the accept/reject string. If the given code aka. grammar is not a Python language, reject it. In other words, throw a syntax error message).
 
 ## How to Use/Run the Interpreter
-- In command line, navigate to src/com/popl/python-interpreter and run "javac PythonInterpreter.java" and then navigate to src and run "java com/popl/python_interpreter/PythonInterpreter"
+- In your command line, navigate to the src/com/popl/python-interpreter directory and run "java -cp bin com.popl.python_interpreter.PythonInterpreter".  When prompted for a file, you can enter "python_test_code.py".  You must have at least JDK 11 for the program to run successfully.
 
 ## Grading Criteria
 - A working interpreter – 60%
