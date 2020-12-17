@@ -398,35 +398,38 @@ public class PythonInterpreter {
 
     // function to handle arithmetic operators
     private static Integer calculate(String line) {
-        // Scanner finder = new Scanner(line);
-        // int newValue;
-        // while(finder.findInLine("[0-9]*")) {
-        //     int firstValue = Integer.parseInt(finder.findInLine("[0-9]*"));
-        //     String operator = finder.findInLine("[^0-9]*").trim();
-        //     int secondValue = Integer.parseInt(finder.findInLine("[0-9]*"));
-        //     switch (operator){
-        //         case "+":
-        //             newValue = firstValue + secondValue;
-        //         case "-":
-        //             newValue = firstValue - secondValue;
-        //         case "/":
-        //             newValue = firstValue / secondValue;
-        //         case "*":
-        //             newValue = firstValue * secondValue;
-        //         case "%":
-        //             newValue = firstValue % secondValue;
-        //         default:
-        //             throw new RuntimeException("unknown operator: "+operator);
-        //     }
-        //     String newLines = line.split(operator);
-        //     String moreNewLines = newLines.split(str(secondValue));
-        //     line = moreNewLines[1];
-        // }
-        // finder.close();
-        // return newValue;
-        return 5;
-    }
+        int secondValue;
+        String operator;
+        String elements[] = line.split(" ");
+        int newValue = Integer.parseInt(elements[1]);
+        int i = 2;
 
+        while(i < elements.length - 1) {
+            operator = elements[i];
+            secondValue = Integer.parseInt(elements[i+1]);
+            switch (operator){
+                case "+":
+                    newValue += secondValue;
+                    break;
+                case "-":
+                    newValue -= secondValue;
+                    break;
+                case "/":
+                    newValue /= secondValue;
+                    break;
+                case "*":
+                    newValue *= secondValue;
+                    break;
+                case "%":
+                    newValue %= secondValue;
+                    break;
+                default:
+                    throw new RuntimeException("unknown operator: "+operator);
+            }
+            i += 2;
+        }
+        return newValue;
+    }
 
     // // function to handle while loops
     // private static void handleWhile(String line) {
