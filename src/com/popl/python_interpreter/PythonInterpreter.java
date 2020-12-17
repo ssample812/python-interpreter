@@ -75,12 +75,10 @@ public class PythonInterpreter {
 		String line = fileLines.get(lineNum);
         if(line.matches("\s*while.*")) {
             // call while function
-            // return new line num
             lineNum++;
         }
         else if(line.matches("\s*for.*")) {
             // call for function
-            // return new line num
             handleFor(line);
             lineNum++;
         }
