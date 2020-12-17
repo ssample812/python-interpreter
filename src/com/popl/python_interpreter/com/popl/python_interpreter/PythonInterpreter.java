@@ -81,7 +81,8 @@ public class PythonInterpreter {
         else if(line.matches("\s*for.*")) {
             // call for function
             // return new line num
-            handleFor(line);
+            System.out.println("Calling for loop");
+            //handleFor(line);
             lineNum++;
         }
         else if(line.matches("\s*if.*")) {
@@ -427,15 +428,15 @@ public class PythonInterpreter {
         return 5;
     }
 
-    }
 
-    // function to handle while loops
-    private static void handleWhile(String line) {
+    // // function to handle while loops
+    // private static void handleWhile(String line) {
 
-    }
+    // }
 
     // // function to handle for loops
     // private static void handleFor(String line) {
+    //     System.out.println("Handling for loop");
     //     // if the line is a valid for loop
     //     if (line.matches("\s*for\\(.*\\):")){ 
     //         // get rid of for () and keep the condition
